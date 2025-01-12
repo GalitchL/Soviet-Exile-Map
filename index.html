@@ -32,10 +32,14 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="data/WorldMap_0.js"></script>
-        <script src="data/AharonCoordinatesCVS_1.js"></script>
-        <script src="data/Aharon_Pathaharon_coordinates_cvs_2.js"></script>
-        <script src="data/Aharon_Points_Lines_3.js"></script>
+        <script src="data/Aharon_Pathaharon_coordinates_cvs_1.js"></script>
+        <script src="data/Aharon_Points_Lines_2.js"></script>
         <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
         }).fitBounds([[21.21129134552603,-22.509561248919645],[89.09154852524722,102.68935717980438]]);
@@ -77,6 +81,18 @@
         function setBounds() {
         }
         function pop_WorldMap_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
@@ -136,66 +152,25 @@
         });
         bounds_group.addLayer(layer_WorldMap_0);
         map.addLayer(layer_WorldMap_0);
-        function pop_AharonCoordinatesCVS_1(feature, layer) {
+        function pop_Aharon_Pathaharon_coordinates_cvs_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['coordinate location 1'] !== null ? autolinker.link(feature.properties['coordinate location 1'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['coordinate location 2'] !== null ? autolinker.link(feature.properties['coordinate location 2'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
-			layer.on('popupopen', function(e) {
-				addClassToPopupIfMedia(content, e.popup);
-			});
-			layer.bindPopup(content, { maxHeight: 400 });
-        }
-
-        function style_AharonCoordinatesCVS_1_0() {
-            return {
-                pane: 'pane_AharonCoordinatesCVS_1',
-                radius: 7.2,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(183,72,75,1.0)',
-                interactive: true,
-            }
-        }
-        map.createPane('pane_AharonCoordinatesCVS_1');
-        map.getPane('pane_AharonCoordinatesCVS_1').style.zIndex = 401;
-        map.getPane('pane_AharonCoordinatesCVS_1').style['mix-blend-mode'] = 'normal';
-        var layer_AharonCoordinatesCVS_1 = new L.geoJson(json_AharonCoordinatesCVS_1, {
-            attribution: '',
-            interactive: true,
-            dataVar: 'json_AharonCoordinatesCVS_1',
-            layerName: 'layer_AharonCoordinatesCVS_1',
-            pane: 'pane_AharonCoordinatesCVS_1',
-            onEachFeature: pop_AharonCoordinatesCVS_1,
-            pointToLayer: function (feature, latlng) {
-                var context = {
-                    feature: feature,
-                    variables: {}
-                };
-                return L.circleMarker(latlng, style_AharonCoordinatesCVS_1_0(feature));
-            },
-        });
-        bounds_group.addLayer(layer_AharonCoordinatesCVS_1);
-        map.addLayer(layer_AharonCoordinatesCVS_1);
-        function pop_Aharon_Pathaharon_coordinates_cvs_2(feature, layer) {
-            var popupContent = '<table>\
-                    <tr>\
-                        <th scope="row">City</th>\
-                        <td>' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['coordinate location 1'] !== null ? autolinker.link(feature.properties['coordinate location 1'].toLocaleString()) : '') + '</td>\
@@ -215,9 +190,9 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_Aharon_Pathaharon_coordinates_cvs_2_0() {
+        function style_Aharon_Pathaharon_coordinates_cvs_1_0() {
             return {
-                pane: 'pane_Aharon_Pathaharon_coordinates_cvs_2',
+                pane: 'pane_Aharon_Pathaharon_coordinates_cvs_1',
                 radius: 8.8,
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
@@ -231,27 +206,39 @@
                 interactive: true,
             }
         }
-        map.createPane('pane_Aharon_Pathaharon_coordinates_cvs_2');
-        map.getPane('pane_Aharon_Pathaharon_coordinates_cvs_2').style.zIndex = 402;
-        map.getPane('pane_Aharon_Pathaharon_coordinates_cvs_2').style['mix-blend-mode'] = 'normal';
-        var layer_Aharon_Pathaharon_coordinates_cvs_2 = new L.geoJson(json_Aharon_Pathaharon_coordinates_cvs_2, {
+        map.createPane('pane_Aharon_Pathaharon_coordinates_cvs_1');
+        map.getPane('pane_Aharon_Pathaharon_coordinates_cvs_1').style.zIndex = 401;
+        map.getPane('pane_Aharon_Pathaharon_coordinates_cvs_1').style['mix-blend-mode'] = 'normal';
+        var layer_Aharon_Pathaharon_coordinates_cvs_1 = new L.geoJson(json_Aharon_Pathaharon_coordinates_cvs_1, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Aharon_Pathaharon_coordinates_cvs_2',
-            layerName: 'layer_Aharon_Pathaharon_coordinates_cvs_2',
-            pane: 'pane_Aharon_Pathaharon_coordinates_cvs_2',
-            onEachFeature: pop_Aharon_Pathaharon_coordinates_cvs_2,
+            dataVar: 'json_Aharon_Pathaharon_coordinates_cvs_1',
+            layerName: 'layer_Aharon_Pathaharon_coordinates_cvs_1',
+            pane: 'pane_Aharon_Pathaharon_coordinates_cvs_1',
+            onEachFeature: pop_Aharon_Pathaharon_coordinates_cvs_1,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_Aharon_Pathaharon_coordinates_cvs_2_0(feature));
+                return L.circleMarker(latlng, style_Aharon_Pathaharon_coordinates_cvs_1_0(feature));
             },
         });
-        bounds_group.addLayer(layer_Aharon_Pathaharon_coordinates_cvs_2);
-        map.addLayer(layer_Aharon_Pathaharon_coordinates_cvs_2);
-        function pop_Aharon_Points_Lines_3(feature, layer) {
+        bounds_group.addLayer(layer_Aharon_Pathaharon_coordinates_cvs_1);
+        map.addLayer(layer_Aharon_Pathaharon_coordinates_cvs_1);
+        function pop_Aharon_Points_Lines_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
@@ -264,9 +251,9 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_Aharon_Points_Lines_3_0() {
+        function style_Aharon_Points_Lines_2_0() {
             return {
-                pane: 'pane_Aharon_Points_Lines_3',
+                pane: 'pane_Aharon_Points_Lines_2',
                 opacity: 1,
                 color: 'rgba(219,30,42,1.0)',
                 dashArray: '',
@@ -277,56 +264,43 @@
                 interactive: true,
             }
         }
-        map.createPane('pane_Aharon_Points_Lines_3');
-        map.getPane('pane_Aharon_Points_Lines_3').style.zIndex = 403;
-        map.getPane('pane_Aharon_Points_Lines_3').style['mix-blend-mode'] = 'normal';
-        var layer_Aharon_Points_Lines_3 = new L.geoJson(json_Aharon_Points_Lines_3, {
+        map.createPane('pane_Aharon_Points_Lines_2');
+        map.getPane('pane_Aharon_Points_Lines_2').style.zIndex = 402;
+        map.getPane('pane_Aharon_Points_Lines_2').style['mix-blend-mode'] = 'normal';
+        var layer_Aharon_Points_Lines_2 = new L.geoJson(json_Aharon_Points_Lines_2, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Aharon_Points_Lines_3',
-            layerName: 'layer_Aharon_Points_Lines_3',
-            pane: 'pane_Aharon_Points_Lines_3',
-            onEachFeature: pop_Aharon_Points_Lines_3,
-            style: style_Aharon_Points_Lines_3_0,
+            dataVar: 'json_Aharon_Points_Lines_2',
+            layerName: 'layer_Aharon_Points_Lines_2',
+            pane: 'pane_Aharon_Points_Lines_2',
+            onEachFeature: pop_Aharon_Points_Lines_2,
+            style: style_Aharon_Points_Lines_2_0,
         });
-        bounds_group.addLayer(layer_Aharon_Points_Lines_3);
-        map.addLayer(layer_Aharon_Points_Lines_3);
+        bounds_group.addLayer(layer_Aharon_Points_Lines_2);
+        map.addLayer(layer_Aharon_Points_Lines_2);
         setBounds();
         var i = 0;
-        layer_AharonCoordinatesCVS_1.eachLayer(function(layer) {
+        layer_Aharon_Pathaharon_coordinates_cvs_1.eachLayer(function(layer) {
             var context = {
                 feature: layer.feature,
                 variables: {}
             };
-            layer.bindTooltip((layer.feature.properties['City'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['City']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_AharonCoordinatesCVS_1'});
+            layer.bindTooltip((layer.feature.properties['City'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['City']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Aharon_Pathaharon_coordinates_cvs_1'});
             labels.push(layer);
             totalMarkers += 1;
               layer.added = true;
               addLabel(layer, i);
               i++;
         });
-        var i = 0;
-        layer_Aharon_Pathaharon_coordinates_cvs_2.eachLayer(function(layer) {
-            var context = {
-                feature: layer.feature,
-                variables: {}
-            };
-            layer.bindTooltip((layer.feature.properties['City'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['City']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Aharon_Pathaharon_coordinates_cvs_2'});
-            labels.push(layer);
-            totalMarkers += 1;
-              layer.added = true;
-              addLabel(layer, i);
-              i++;
-        });
-        resetLabels([layer_AharonCoordinatesCVS_1,layer_Aharon_Pathaharon_coordinates_cvs_2]);
+        resetLabels([layer_Aharon_Pathaharon_coordinates_cvs_1]);
         map.on("zoomend", function(){
-            resetLabels([layer_AharonCoordinatesCVS_1,layer_Aharon_Pathaharon_coordinates_cvs_2]);
+            resetLabels([layer_Aharon_Pathaharon_coordinates_cvs_1]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_AharonCoordinatesCVS_1,layer_Aharon_Pathaharon_coordinates_cvs_2]);
+            resetLabels([layer_Aharon_Pathaharon_coordinates_cvs_1]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_AharonCoordinatesCVS_1,layer_Aharon_Pathaharon_coordinates_cvs_2]);
+            resetLabels([layer_Aharon_Pathaharon_coordinates_cvs_1]);
         });
         </script>
     </body>
